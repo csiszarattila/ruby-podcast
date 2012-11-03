@@ -78,9 +78,9 @@ module Podcast
           item.title = mp3
           ## add a base url 
           if base != ''
-            link = base + '/' + URI::escape(mp3.path)
+            link = base + '/' + URI.escape(mp3.path)
           else 
-            link = URI::escape(mp3.path)
+            link = URI.escape(mp3.path)
           end
           item.link = link
           item.date = mp3.mtime
