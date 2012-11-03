@@ -53,5 +53,30 @@ class PodcastTest < Test::Unit::TestCase
     assert(items.size == 1)
     assert_equal(items[0].link, 'http://www.example.org/torrents/test.mp3')
   end
+  
+  def test_get_itunes_rss
+     p = Podcast::Feed.new
+     p.title = 'test podcast'
+     p.description = 'test podcast coming at ya'
+     p.link = 'http://www.example.org'
+     p.image = 'http://www.example.org/icon.png'
+     p.base = 'http://www.example.org/torrents'
+     ## add using directory so we can confirm it is stripped
+     p.add_dir('test') 
+     p.version = "2.0"
+     xml = p.get_rss().to_s
 
+     # parse the rss
+     parser = RSS::Parser.new('0.9')
+     rss = RSS::Parser.parse(xml)
+     items = rss.items()
+     assert(items.size == 1)
+     assert_not_nil(rss.channel.itunes_image)
+     assert_equal(items[0].link, 'http://www.example.org/torrents/test.mp3')
+     assert_equal(items[0].enclosure.url, 'http://www.example.org/torrents/test.mp3')
+     assert(items[0].enclosure.length > 0)
+     assert_not_nil(items[0].enclosure.type)
+     assert_not_nil(items[0].itunes_summary)
+     assert_not_nil(items[0].itunes_subtitle)
+   end
 end

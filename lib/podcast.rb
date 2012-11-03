@@ -64,6 +64,7 @@ module Podcast
         m.channel.link = @link 
         m.channel.language = @language
         m.channel.about = @about
+        m.channel.itunes_image = @image
         m.items.do_sort = true # sort items by date
 
         if @image != nil
@@ -86,6 +87,8 @@ module Podcast
           item.enclosure.url = link
           item.enclosure.length = mp3.length
           item.enclosure.type = mp3.type
+          item.itunes_summary = mp3.comments
+          item.itunes_subtitle = mp3.comments
         end
       end
 
@@ -102,8 +105,8 @@ module Podcast
 
   class Mp3File
 
-    attr_reader :artist, :album, :title, :file, :path, :length, :type, :mtime
-    attr_writer :artist, :album, :title, :file, :path, :length, :type, :mtime
+    attr_reader :artist, :album, :title, :comments, :file, :path, :length, :type, :mtime
+    attr_writer :artist, :album, :title, :comments, :file, :path, :length, :type, :mtime
 
     def initialize(f)
       file = File.new(f)
@@ -113,6 +116,7 @@ module Podcast
       @artist = tag['artist']
       @album = tag['album']
       @title = tag['title']
+      @comments = tag['comments']
       @path = file.path()
       @length = file.stat.size()
       @mtime = file.stat.mtime()
